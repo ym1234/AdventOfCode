@@ -5,9 +5,9 @@ import java.nio.file.*;
 public class Day16 {
 
 	public static class Move {
-		BiFunction <Integer, Integer, Function<List<Character>, Integer>> func;
+		BiFunction <Integer, Integer, Function<List<Character>, Character>> func;
 		public final int[] params;
-		public Move(BiFunction<Integer, Integer, Function<List<Character>, Integer>> func, int... params) {
+		public Move(BiFunction<Integer, Integer, Function<List<Character>, Character>> func, int... params) {
 			this.func = func;
 			this.params = params;
 		}
@@ -26,12 +26,12 @@ public class Day16 {
 	public static Move[] parse(List<String> file) {
 		return file.parallelStream().flatMap(i -> Arrays.stream(i.split(","))).map(i -> {
 			switch (i.charAt(0)) {
-			case 's' : return new Move((x, y) -> list -> { Collections.rotate(list, x); return x; }, Integer.parseInt(i.substring(1, i.length())), 0);
+			case 's' : return new Move((x, y) -> list -> { Collections.rotate(list, x); return list.get(x); }, Integer.parseInt(i.substring(1, i.length())), 0);
 			case 'x' :
 				String[] param = i.substring(1, i.length()).split("/");
-				return new Move((x, y) -> list -> (int) list.set(x, list.set(y, list.get(x))), Integer.parseInt(param[0]), Integer.parseInt(param[1]));
+				return new Move((x, y) -> list -> list.set(x, list.set(y, list.get(x))), Integer.parseInt(param[0]), Integer.parseInt(param[1]));
 			// auto-unboxing hates me.
-			case 'p' : return new Move((x, y) -> list -> (int) list.set(list.indexOf((char) x.intValue()), list.set(list.indexOf((char) y.intValue()), (char) x.intValue())), i.charAt(1), i.charAt(3));
+			case 'p' : return new Move((x, y) -> list -> list.set(list.indexOf((char) x.intValue()), list.set(list.indexOf((char) y.intValue()), (char) x.intValue())), i.charAt(1), i.charAt(3));
 			default: return null;
 			}
 		}).toArray(Move[]::new);
@@ -64,7 +64,7 @@ public class Day16 {
 			case 'p' : Partner((char)move.params[0], (char)move.params[1], input); break;
 			}
 		}*/
-		return input; 
+		return input;
 	}
 	/*
 	public static void Spin(int by, List<Character> list) {
