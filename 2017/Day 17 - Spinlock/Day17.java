@@ -14,7 +14,7 @@ public class Day17 {
 		spinlock.add(0);
 		for (int i = 1; i < 2018; i++) {
 			currentPos = (currentPos + stepForward) % spinlock.size();
-			spinlock.add(currentPos++,	 i);
+			spinlock.add(currentPos++, i);
 		}
 		return spinlock.get((spinlock.indexOf(2017) + 1) % spinlock.size());
 	}
