@@ -14,7 +14,7 @@ public class Day17 {
 		spinlock.add(0);
 		for (int i = 1; i < 2018; i++) {
 			currentPos = (currentPos + stepForward) % spinlock.size();
-			spinlock.add(currentPos++, i);
+			spinlock.add(currentPos++,	 i);
 		}
 		return spinlock.get((spinlock.indexOf(2017) + 1) % spinlock.size());
 	}
@@ -30,19 +30,4 @@ public class Day17 {
 		}
 		return req;
 	}
-	public static int part2v2(int input) {
-		int currPos = 0;
-		int result = 0;
-		int limit = 50000000;
-		int n = 0;
-		while (n < limit) {
-			if (currPos == 1)
-				result = n;
-			int fits = (n - currPos) / input;
-			n += (fits + 1);
-			currPos =  (currPos + (fits + 1) * (input + 1) - 1) % n + 1;
-		}
-		return result;
-	}
-
 }
