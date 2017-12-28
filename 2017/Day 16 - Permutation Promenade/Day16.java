@@ -1,13 +1,14 @@
 import java.util.*;
 import java.util.stream.*;
+import java.util.function.*;
 import java.nio.file.*;
 public class Day16 {
 
 	public static class Move {
-		public final char type;
+		BiFunction <Integer, Integer, Function<List<Character>, Integer>> func;
 		public final int[] params;
-		public Move(char type, int... params) {
-			this.type = type;
+		public Move(BiFunction<Integer, Integer, Function<List<Character>, Integer>> func, int... params) {
+			this.func = func;
 			this.params = params;
 		}
 	}
@@ -25,11 +26,12 @@ public class Day16 {
 	public static Move[] parse(List<String> file) {
 		return file.parallelStream().flatMap(i -> Arrays.stream(i.split(","))).map(i -> {
 			switch (i.charAt(0)) {
-			case 's' : return new Move('s', Integer.parseInt(i.substring(1, i.length())));
+			case 's' : return new Move((x, y) -> list -> { Collections.rotate(list, x); return x; }, Integer.parseInt(i.substring(1, i.length())), 0);
 			case 'x' :
 				String[] param = i.substring(1, i.length()).split("/");
-				return new Move('x', Integer.parseInt(param[0]), Integer.parseInt(param[1]));
-			case 'p' : return new Move('p', i.charAt(1), i.charAt(3));
+				return new Move((x, y) -> list -> (int) list.set(x, list.set(y, list.get(x))), Integer.parseInt(param[0]), Integer.parseInt(param[1]));
+			// auto-unboxing hates me.
+			case 'p' : return new Move((x, y) -> list -> (int) list.set(list.indexOf((char) x.intValue()), list.set(list.indexOf((char) y.intValue()), (char) x.intValue())), i.charAt(1), i.charAt(3));
 			default: return null;
 			}
 		}).toArray(Move[]::new);
@@ -54,16 +56,17 @@ public class Day16 {
 	}
 
 	public static List<Character> dance(Move[] moves, List<Character> input) {
-		for (Move move : moves) {
+		Arrays.stream(moves).forEach(i -> i.func.apply(i.params[0], i.params[1]).apply(input));
+		/*for (Move move : moves) {
 			switch (move.type) {
 			case 's' : Spin(move.params[0], input); break;
 			case 'x' : Exchange(move.params[0], move.params[1], input); break;
 			case 'p' : Partner((char)move.params[0], (char)move.params[1], input); break;
 			}
-		}
-		return input;
+		}*/
+		return input; 
 	}
-
+	/*
 	public static void Spin(int by, List<Character> list) {
 		Collections.rotate(list, by);
 	}
@@ -75,4 +78,5 @@ public class Day16 {
 	public static void Partner(char x, char y, List<Character> list) {
 		list.set(list.indexOf(x), list.set(list.indexOf(y), x));
 	}
+	*/
 }
