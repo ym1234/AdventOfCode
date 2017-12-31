@@ -34,11 +34,7 @@ public class Day7 {
 			return this;
 		}
 		public String toString() {
-			if (parent != null) {
-				return "Name: " + name + ", Weight: " + weight;
-			} else {
-				return "Name: " + name + ", Weight: " + weight;
-			}
+			return "Name: " + name + ", Weight: " + weight;
 		}
 		public String getName() {
 			return name;
@@ -54,8 +50,8 @@ public class Day7 {
 		HashMap<String, Pair<Integer, String[]>> nodeProperties = new HashMap<>();
 		// This is inefficient, if you know a better way, please tell me.
 		Files.readAllLines(Paths.get(args[0])).stream()
-			.map(i -> i.replaceAll("[^a-zA-Z0-9]+", " ").split("\\s+"))
-			.forEach(i -> nodeProperties.put(i[0], new Pair<Integer, String[]>(Integer.parseInt(i[1]), Arrays.copyOfRange(i, 2, i.length))));
+		.map(i -> i.replaceAll("[^a-zA-Z0-9]+", " ").split("\\s+"))
+		.forEach(i -> nodeProperties.put(i[0], new Pair<Integer, String[]>(Integer.parseInt(i[1]), Arrays.copyOfRange(i, 2, i.length))));
 		Node node = buildTree(nodeProperties);
 
 		System.out.println(treeStructure(0, new StringBuilder(), new StringBuilder(), node, 1000, true));
@@ -79,7 +75,7 @@ public class Day7 {
 		ArrayList<Node> children = new ArrayList<>();
 		for (int i = 0; i < properties.length; i++) {
 			String childName = properties[i];
-			
+
 			Node child = nodes.getOrDefault(childName, new Node(childName, nodeProperties.get(childName).getKey()));
 			nodes.putIfAbsent(childName, child);
 
@@ -124,15 +120,17 @@ public class Day7 {
 	}
 
 	public static Node getInbalancedNode(Node root) {
-		int[] sums = new int[root.getChildren().size()];
-		int i = 0;
-		for (Node child : root.getChildren()) {
-			sums[i++] = sum(child);
+		ArrayList<Node> children = root.getChildren(); 
+		int[] sums = new int[children.size()];
+
+		for (int i = 0; i < sums.length; i++) {
+			sums[i] = sum(children.get(i));
 		}
+
 		Node faultyNode = null;
 		for (int j = 0; j < sums.length; j++) {
 			if (sums[j] != sums[(j - 1 + sums.length) % sums.length] && sums[j] != sums[(j + 1) % sums.length]) {
-				faultyNode = root.getChildren().get(j);
+				faultyNode = children.get(j);
 				break;
 			}
 		}

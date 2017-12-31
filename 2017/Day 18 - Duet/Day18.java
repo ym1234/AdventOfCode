@@ -81,6 +81,7 @@ public class Day18 {
 						break;
 					}
 				} else {
+					// The only instructions you need to eval are 'snd', 'rcv' and 'jnz'.
 					counter += eval(instruction, registers) - 1;
 				}
 				counter++;

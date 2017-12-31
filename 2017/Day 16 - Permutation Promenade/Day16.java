@@ -2,6 +2,7 @@ import java.util.*;
 import java.util.stream.*;
 import java.util.function.*;
 import java.nio.file.*;
+
 public class Day16 {
 
 	public static class Move<T> {
@@ -15,10 +16,11 @@ public class Day16 {
 
 	public static void main(String[] args) throws Exception {
 		Move[] moves = parse(Files.readAllLines(Paths.get(args[0])));
+		Character[] chars = new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'};
 		while (true) {
 			long millis = System.currentTimeMillis();
-			System.out.println("Part 1: " + part1(moves));
-			System.out.println("Part 2: " + part2(moves));
+			System.out.println("Part 1: " + part1(moves, new ArrayList<>(Arrays.asList(chars))));
+			System.out.println("Part 2: " + part2(moves, new ArrayList<>(Arrays.asList(chars))));
 			System.out.println("Took: " + (System.currentTimeMillis() - millis) + "ms");
 		}
 	}
@@ -36,22 +38,22 @@ public class Day16 {
 		}).toArray(Move[]::new);
 	}
 
-	public static List<Character> part1(Move[] moves) {
-		return dance(moves, Arrays.asList(new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'}));
+	public static List<Character> part1(Move[] moves, List<Character> chars) {
+		return dance(moves, chars);
 	}
 
-	public static List<Character> part2(Move[] moves) {
+	public static List<Character> part2(Move[] moves, List<Character> chars) {
 		HashMap <List<Character>, Integer> set = new HashMap<>();
-		List<Character> input = Arrays.asList(new Character[] {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'});
+		List<Character> input = chars;
 		for (int i = 0; i < 1000000000; i++) {
 			dance(moves, input);
-			if (set.containsKey(input)) {
-				break;
-			} else {
+			if (!set.containsKey(input)) {
 				set.put(new ArrayList<>(input), i);
+			} else {
+				break;
 			}
 		}
-		return set.entrySet().parallelStream().filter(i -> i.getValue() == (1000000000 % set.size() - 1)).map(Map.Entry::getKey).collect(Collectors.toList()).get(0);
+		return set.entrySet().parallelStream().filter(i -> i.getValue() == 1000000000 % set.size() - 1).map(Map.Entry::getKey).collect(Collectors.toList()).get(0);
 	}
 
 	public static List<Character> dance(Move[] moves, List<Character> input) {

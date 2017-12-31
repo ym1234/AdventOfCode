@@ -22,43 +22,36 @@ public class Day9 {
 			char currentChar = input[i];
 			switch (currentMode) {
 			case NORMAL:
-				if (currentChar == '{') {
+				switch (currentChar) {
+				case'{':
 					stack.push('{');
 					score += stack.size();
 					cleaned.append(currentChar);
-				} else if (currentChar == '}') {
+					break;
+				case '}':
 					cleaned.append(currentChar);
 					stack.pop();
-				} else if (currentChar == '!') {
-					currentMode = Mode.IGNOREONE;
-					lastMode = Mode.NORMAL;
-				} else if (currentChar == '<') {
-					currentMode = Mode.IGNORE;
-					lastMode = Mode.NORMAL;
-				} else {
-					cleaned.append(currentChar);
-				}
-				lastMode = currentMode;
-				break;
-			case IGNOREONE:
-				currentMode = lastMode;
-				lastMode = Mode.IGNOREONE;
+					break;
+				case '!': currentMode = Mode.IGNOREONE; break;
+				case '<': currentMode = Mode.IGNORE; break;
+				default: cleaned.append(currentChar);
+				} 
+				lastMode = Mode.NORMAL;
 				break;
 			case IGNORE:
-				if (currentChar == '!') {
-					currentMode = Mode.IGNOREONE;
-					lastMode = Mode.IGNORE;
-				} else if (currentChar == '>') {
-					currentMode = Mode.NORMAL;
-					lastMode = Mode.IGNORE;
-				} else {
-					ignoredChars++;
+				switch (currentChar) {
+				case '!': currentMode = Mode.IGNOREONE; break;
+				case '>': currentMode = Mode.NORMAL; break;
+				default : ignoredChars++;
 				}
+				lastMode = Mode.IGNORE;
 				break;
+			case IGNOREONE: currentMode = lastMode; break;
 			}
 		}
 		System.out.println("Part 1: " + score);
 		System.out.println("Part 2: " + ignoredChars);
+		System.out.println("Cleaned Version: " + cleaned);
 	}
 
 	public static char[] getInput(String name) throws Exception {
