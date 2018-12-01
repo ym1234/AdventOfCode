@@ -6,19 +6,15 @@ import java.io.*;
 
 public class Main {
 	public static void main(String[] args) throws IOException {
-		part1();
-		System.out.println(part2());
-		System.out.println(part2_second());
+		List<Integer> input = Files.readAllLines(Paths.get("input.txt")).stream().map(Integer::parseInt).collect(Collectors.toList());
+		System.out.printf("%d, %d, %d\n", part1(input), part2(input), part2_second(input));
 	}
 
-	public static void part1() throws IOException {
-		System.out.println(
-				Files.readAllLines(Paths.get("input.txt")).stream().mapToInt(Integer::parseInt).sum()
-				);
+	public static int part1(List<Integer> list) throws IOException {
+		return list.stream().mapToInt(Integer::intValue).sum();
 	}
 
-	public static int part2_second() throws IOException {
-		List<Integer> list = Files.readAllLines(Paths.get("input.txt")).stream().map(Integer::parseInt).collect(Collectors.toList());
+	public static int part2_second(List<Integer> list) throws IOException {
 		IntSupplier supplier = new IntSupplier() {
 			int i = 0;
 			int currentFreq = 0;
@@ -34,23 +30,20 @@ public class Main {
 			if (results.contains(i)) {
 				return true;
 			} else {
-				results.put(i, true);
+				results.add(i);
 				return false;
 			}}).findFirst().orElse(-1);
 	}
 
-	public static int part2()throws IOException  {
-		List<Integer> list = Files.readAllLines(Paths.get("input.txt")).stream().mapToInt(Integer::parseInt).boxed().collect(Collectors.toList());
-		HashMap<Integer, Boolean> results = new HashMap<>();
+	public static int part2(List<Integer> list) throws IOException {
+		HashSet<Integer> results = new HashSet<>();
 		int result = 0;
-		int i = 0;
-		while(true) {
+		for(int i = 0; true; i = (i + 1) % list.size()) {
 			result += list.get(i);
-			if (results.get(result) != null) {
+			if (results.contains(result)) {
 				return result;
 			}
-			results.put(result, true);
-			i = (i + 1) % list.size();
+			results.add(result);
 		}
 	}
 }
