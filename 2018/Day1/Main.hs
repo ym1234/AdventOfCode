@@ -1,22 +1,17 @@
-import qualified Data.IntSet as IntSet
+import Data.IntSet
 
 -- parse Taken from reddit lul
 parse :: String -> [Int]
-parse =  map (read . dropWhile (== '+')) . lines
+parse =  fmap (read . dropWhile (== '+')) . lines
 
 part1 :: [Int] -> Int
 part1 = sum
 
 part2 :: [Int] -> Int
-part2 x = f IntSet.empty $ scanl (+) 0 $ cycle x
+part2 = f empty . scanl (+) 0 . cycle
 
-f :: IntSet.IntSet -> [Int] -> Int
-f set (x:xs) = if IntSet.member x set then x else f (IntSet.insert x set) xs
+f :: IntSet -> [Int] -> Int
+f set (x:xs) = if member x set then x else f (insert x set) xs
 
-main = do
-  file <- readFile "input.txt"
-  let input = parse file
-  let out = putStrLn . show
-  out . part1 $ input
-  out . part2 $ input
-
+main :: IO ()
+main = putStrLn =<< show . (([part1, part2] <*>) . pure) <$> parse <$> readFile "input.txt"

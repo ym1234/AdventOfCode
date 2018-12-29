@@ -8,11 +8,11 @@ def scan_right(l, d, x):
             yield last
 
 with open("input.txt") as f:
-    content = [int(x) for x in f.readlines()]
-    part1 = sum(content)
-    results = set()
+    input = [int(x) for x in f.readlines()]
+    part1 = sum(input)
 
-    for i in scan_right(content, 0, operator.add):
+    results = set()
+    for i in scan_right(input, 0, operator.add):
         if i in results:
             part2 = i
             break
